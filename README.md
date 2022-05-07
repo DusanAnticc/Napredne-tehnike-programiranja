@@ -33,5 +33,3 @@ Web aplikacija za pronalazak majstora kucnih poslova.
 ## Arhitektura 
 - GO bekend
 - Pharo frontend
-
-*Podaci će biti čuvani u SQL bazi
