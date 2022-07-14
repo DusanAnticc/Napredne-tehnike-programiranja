@@ -31,5 +31,17 @@ Web aplikacija za pronalazak majstora kucnih poslova.
 *Sistem pratiti prijavljene recenzije i korisniku se dodjelju negativan bod za neispostavani dogovor, nakon 3 negativna boda, korisnik ce biti blokiran.
 
 ## Arhitektura 
-- GO bekend
-- Pharo frontend
+
+GO
+- API Gateway: Go
+- Mikroservis za korisnike
+- Mikroservis za majstore
+- Mikroservis za radnike
+- Mikroservis za admina
+- Mikroservis za rezervacije
+- Mikroservis za komentare i ocene 
+
+Pharo
+- Mikroservis za email (slanje potvrde o rezervacijama)
+
+Klijentska veb aplikacija - React
