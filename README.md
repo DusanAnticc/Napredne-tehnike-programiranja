@@ -44,4 +44,5 @@ GO
 Pharo
 - Mikroservis za email (slanje potvrde o rezervacijama)
 
-Klijentska veb aplikacija - React
+React
+- Klijentska veb aplikacija
