@@ -1,5 +1,7 @@
 github.com/DusanAnticc/Napredne-tehnike-programiranja v0.0.0-20230105153428-fc4c75a4faea h1:1TOsiEa/recSrdwbuKkKDGW30nIHPfVe5JymUYP+igA=
 github.com/DusanAnticc/Napredne-tehnike-programiranja v0.0.0-20230105153428-fc4c75a4faea/go.mod h1:278BEi1l8FNpMbxOWJz+vsWE23n+SeaGNUAKht4rXJ8=
+github.com/DusanAnticc/Napredne-tehnike-programiranja v0.0.0-20230105155900-922af0c141f6 h1:p4BxJhgxlO7VfQqNCEGeXwjqXgLwwrcqbVybUUQj2nc=
+github.com/DusanAnticc/Napredne-tehnike-programiranja v0.0.0-20230105155900-922af0c141f6/go.mod h1:278BEi1l8FNpMbxOWJz+vsWE23n+SeaGNUAKht4rXJ8=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

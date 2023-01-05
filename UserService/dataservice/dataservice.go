@@ -4,10 +4,11 @@ import (
 	"gorm.io/gorm"
 )
 
-type Repository struct {
+type DataService struct {
 	db *gorm.DB
 }
 
-func NewRepository(db *gorm.DB) *Repository {
-	return &Repository{db}
+func NewDataService(db *gorm.DB) *DataService {
+	return &DataService{db}
 }
+

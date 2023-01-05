@@ -8,7 +8,7 @@ require (
 )
 
 require (
-	github.com/DusanAnticc/Napredne-tehnike-programiranja v0.0.0-20230105153428-fc4c75a4faea // indirect
+	github.com/DusanAnticc/Napredne-tehnike-programiranja v0.0.0-20230105155900-922af0c141f6 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.2.0 // indirect
