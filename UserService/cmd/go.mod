@@ -1,4 +1,4 @@
-module example/go
+module github.com/DusanAnticc/Napredne-tehnike-programiranja/UserService
 
 go 1.19
 

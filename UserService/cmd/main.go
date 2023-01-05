@@ -1,7 +1,13 @@
 package main
 
-func main(){
+// import (
+// 	"fmt"
+// 	config "github.com/DusanAnticc/Napredne-tehnike-programiranja/UserService/config"
 
-	//dbConn := db.Init()
-	config.Init()
-}
+// )
+
+// func main(){
+
+// 	config.initDatabase()
+// 	fmt.Println("Awaiting http requests...")
+// }

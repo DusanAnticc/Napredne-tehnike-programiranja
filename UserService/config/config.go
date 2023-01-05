@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/DusanAnticc/Napredne-tehnike-programiranja/UserService/model"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -51,7 +52,7 @@ var users = []model.User{
 }
 
 
-func intiDb() *gorm.DB{
+func initDb(){
 
 	config := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", hostdb, userdb, passworddb, dbname)	
 	db, err := gorm.Open(postgres.Open(config), &gorm.Config{})
@@ -68,6 +69,4 @@ func intiDb() *gorm.DB{
 	for _, user := range users {
 		db.Create(&user)
 	}
-
-	return db
 }
