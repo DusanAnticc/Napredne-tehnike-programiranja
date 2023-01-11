@@ -1,9 +1,8 @@
 package config
 
 import (
+	"UserService/model"
 	"fmt"
-
-	"github.com/DusanAnticc/Napredne-tehnike-programiranja/UserService/model"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -16,43 +15,48 @@ const (
     dbname  = "NtpDB"
 )
 
+
 var users = []model.User{
 	{
-		Model:        gorm.Model{},
-		Username:     "dusan",
-		Password:     "123",
-		EmailAddress: "dusan@gmail.com",
-		FirstName:    "Dusan",
-		LastName:     "Antic",
+		Model:        	gorm.Model{},
+		Username:     	"dusan",
+		Password:     	"$2a$10$yu08QPMBib4Jd8i6pUVeeuH.OE22cQWvpGGI5Oqc4DQdRvQL.9Rsm",
+		EmailAddress: 	"dusan@gmail.com",
+		FirstName:    	"Dusan",
+		LastName:     	"Antic",
+		Role:		  	model.Admin,
 	},
 	{
 		Model:          gorm.Model{},
 		Username:       "mirko",
-		Password:     	"123",
+		Password:     	"$2a$10$yu08QPMBib4Jd8i6pUVeeuH.OE22cQWvpGGI5Oqc4DQdRvQL.9Rsm",
 		EmailAddress:   "mirko@gmail.com",
 		FirstName:      "Mirko",
 		LastName:       "Mirkovic",
+		Role:		  	model.Standard,
 	},
 	{
 		Model:          gorm.Model{},
 		Username:       "marko",
-		Password:     	"123",
+		Password:     	"$2a$10$yu08QPMBib4Jd8i6pUVeeuH.OE22cQWvpGGI5Oqc4DQdRvQL.9Rsm",
 		EmailAddress:   "marko@gmail.com",
 		FirstName:      "Marko",
 		LastName:       "Markovic",
+		Role:		  	model.Standard,
 	},
 	{
 		Model:          gorm.Model{},
 		Username:       "nikola",
-		Password:     	"123",
+		Password:     	"$2a$10$yu08QPMBib4Jd8i6pUVeeuH.OE22cQWvpGGI5Oqc4DQdRvQL.9Rsm",
 		EmailAddress:   "nikola@gmail.com",
 		FirstName:      "Nikola",
 		LastName:       "Nikolic",
+		Role:		  	model.Standard,
 	},
 }
 
 
-func initDatabase(){
+func InitDatabase() *gorm.DB{
 
 	config := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", hostdb, userdb, passworddb, dbname)	
 	db, err := gorm.Open(postgres.Open(config), &gorm.Config{})
@@ -69,4 +73,5 @@ func initDatabase(){
 	for _, user := range users {
 		db.Create(&user)
 	}
+	return db
 }

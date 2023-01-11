@@ -1,11 +1,15 @@
 package main
 
 import (
-	"fmt"
+	"UserService/adapter"
+	"UserService/config"
+	"UserService/dataService"
+	"UserService/router"
 )
 
 func main(){
-
-	config.initDatabase()
-	fmt.Println("Awaiting http requests...")
+	db := config.InitDatabase()
+	dataservice := dataService.NewDataService(db)
+	handler := adapter.NewUsersHandler(dataservice)
+	router.HandleRequests(handler)
 }
