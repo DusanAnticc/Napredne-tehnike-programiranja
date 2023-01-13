@@ -11,6 +11,7 @@ import (
 func HandleRequests(handler *adapter.UsersHandler) {
 	router := mux.NewRouter()
 
+	router.HandleFunc("/api/users/auth", handler.Authorize).Methods(http.MethodGet)
 	router.HandleFunc("/api/users/get-all-users", handler.GetAllUsers).Methods(http.MethodGet)
 	router.HandleFunc("/api/users/register", handler.Register).Methods(http.MethodPost)
 	router.HandleFunc("/api/users/login", handler.Login).Methods(http.MethodPost)

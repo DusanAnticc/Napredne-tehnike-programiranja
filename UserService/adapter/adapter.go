@@ -6,9 +6,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/mux"
 )
 
 type UsersHandler struct {
@@ -20,6 +23,28 @@ func NewUsersHandler(ds *dataService.DataService) *UsersHandler {
 }
 
 var jwtKey = []byte("DusanBogOtac")
+
+func (uh *UsersHandler) Authorize(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	cookie := r.Header.Values("Authorization")
+	tokenString := strings.Split(cookie[0], " ")[1]
+
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+			return jwtKey, nil
+		})
+
+	if err != nil || !token.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	// claims, _ := token.Claims.(jwt.MapClaims)
+
+	// if claims["role"] != model.Admin {
+	// 	w.WriteHeader(http.StatusUnauthorized)
+	// }
+}
 
 func (uh *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var user model.User
@@ -98,5 +123,26 @@ func (uh *UsersHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err.Error())
 	} else {
 		json.NewEncoder(w).Encode(newUser)
+	}
+}
+
+func (uh *UsersHandler) FindUserById(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id, err := strconv.ParseInt(params["id"], 0, 64)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+	} else{
+		userDTO, err := uh.ds.FindById(uint64(id))
+		
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(err.Error())
+			return
+		}
+		//poslati dto ne citavog usera
+		json.NewEncoder(w).Encode(userDTO)
 	}
 }

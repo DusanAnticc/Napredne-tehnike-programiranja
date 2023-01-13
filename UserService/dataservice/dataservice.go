@@ -3,6 +3,7 @@ package dataService
 import (
 	"UserService/model"
 	"errors"
+	"unicode"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -64,8 +65,42 @@ func (repo *DataService) FindAllUsers() ([]model.User) {
 func (repo *DataService) FindByEmail(email string) (model.User, error) {
 	var user model.User
 
-	result := repo.db.Table("users").Where("email_address = ?", email).First(&user)
+	result := repo.db.Table("users").Where("email_address = ? AND deleted_at IS NULL", email).First(&user)
 
 	return user, result.Error
 }
 
+func (repo *DataService) FindById(id uint64) (model.User, error) {
+	var user model.User
+
+	result := repo.db.Table("users").Where("id = ? AND deleted_at IS NULL", id).First(&user)
+
+	return user, result.Error
+}
+
+func ValidatePassword(password string) bool {
+	letterNum := 0
+	var Number, CapitalLetter, SpecialSign bool
+
+	for _, c := range password {
+		switch {
+		case unicode.IsNumber(c):
+			Number = true
+			letterNum++
+		case unicode.IsUpper(c):
+			CapitalLetter = true
+			letterNum++
+		case unicode.IsPunct(c) || unicode.IsSymbol(c):
+			SpecialSign = true
+		case unicode.IsLetter(c) || c == ' ':
+			letterNum++
+		default:
+		}
+	}
+
+	if Number && CapitalLetter && SpecialSign && letterNum > 6 {
+		return true
+	}
+	
+	return false
+}

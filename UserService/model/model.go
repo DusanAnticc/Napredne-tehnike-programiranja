@@ -7,8 +7,9 @@ import (
 type Role string
 
 const (
-	Admin = "Admin"
-	Standard      = "Standard"
+	Admin 			= "Admin"
+	Standard      	= "Standard"
+	Repairman		= "Repairman"
 )
 
 
@@ -20,6 +21,7 @@ type User struct {
 	Password       string `gorm:"not null"`
 	EmailAddress   string `gorm:"not null"`
 	Role		   Role
+	MoneyBalance   uint64
 }
 
 type Login struct {
