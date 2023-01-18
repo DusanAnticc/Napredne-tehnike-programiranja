@@ -135,7 +135,7 @@ func (uh *UsersHandler) FindUserById(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())
 	} else{
-		userDTO, err := uh.ds.FindById(uint64(id))
+		user, err := uh.ds.FindById(uint64(id))
 		
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
@@ -143,6 +143,6 @@ func (uh *UsersHandler) FindUserById(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		//poslati dto ne citavog usera
-		json.NewEncoder(w).Encode(userDTO)
+		json.NewEncoder(w).Encode(user)
 	}
 }
