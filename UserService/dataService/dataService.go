@@ -36,7 +36,7 @@ func (repo *DataService) Save(user model.User) (uint, error) {
 	return user.ID, result.Error
 }
 
-func (repo *DataService) Update(userDto *model.UpdateUserDto) (error) {
+func (repo *DataService) Update(userDto *model.UpdateUserDto) error {
 	var user model.User
 	result := repo.db.Table("users").Where("id = ?", userDto.Id).First(&user)
 
@@ -53,11 +53,10 @@ func (repo *DataService) Update(userDto *model.UpdateUserDto) (error) {
 	return retValue.Error
 }
 
-func (repo *DataService) FindAllUsers() ([]model.User) {
-	var allUsers [] model.User
+func (repo *DataService) FindAllUsers() []model.User {
+	var allUsers []model.User
 
-	repo.db.Table("users").Where("(deleted_at IS NULL)").First(&allUsers)
-
+	repo.db.Table("users").Where("(deleted_at IS NULL)").Find(&allUsers)
 
 	return allUsers
 }
@@ -101,6 +100,106 @@ func ValidatePassword(password string) bool {
 	if Number && CapitalLetter && SpecialSign && letterNum > 6 {
 		return true
 	}
-	
+
 	return false
+}
+
+func (repo *DataService) CreateRepairman(userDto *model.CreateRepairmanDto) error {
+	var user model.User
+
+	/*result :=*/
+	repo.db.Table("users").Where("username = ?", userDto.Username).First(&user)
+	//err1 := errors.New("record not found")
+
+	//if result.Error != err1 {
+	//	return errors.New("User already exist!")
+	//}
+
+	user.FirstName = userDto.FirstName
+	user.LastName = userDto.LastName
+	user.Username = userDto.Username
+	user.EmailAddress = userDto.EmailAddress
+	user.Password = userDto.Password
+	user.Role = model.Repairman
+	user.Address = userDto.Address
+	user.Occupation = userDto.Occupation
+	user.Price = userDto.Price
+
+	retValue := repo.db.Table("users").Save(&user)
+
+	return retValue.Error
+}
+
+func (repo *DataService) FindAllRepairman() []model.User {
+	var allUsers []model.User
+
+	repo.db.Table("users").Where("(deleted_at IS NULL) AND (role = ?)", model.Role("Repairman")).Find(&allUsers)
+
+	return allUsers
+}
+
+func (repo *DataService) BanUser(id uint64) (*model.User, error) {
+	var user model.User
+	result := repo.db.Table("users").Where("id = ?", id).First(&user)
+
+	if result.Error != nil {
+		return nil, errors.New("User cannot be found!")
+	}
+
+	user.Banned = true
+
+	retValue := repo.db.Table("users").Save(&user)
+
+	return &user, retValue.Error
+}
+
+func (repo *DataService) Payment(id, money uint64) (*model.User, error) {
+	var user model.User
+	result := repo.db.Table("users").Where("id = ?", id).First(&user)
+
+	if result.Error != nil {
+		return nil, errors.New("User cannot be found!")
+	}
+
+	user.MoneyBalance = user.MoneyBalance + money
+
+	retValue := repo.db.Table("users").Save(&user)
+
+	return &user, retValue.Error
+}
+
+func (repo *DataService) PayBill(id, money uint64) (*model.User, error) {
+	var user model.User
+	result := repo.db.Table("users").Where("id = ?", id).First(&user)
+
+	if result.Error != nil {
+		return nil, errors.New("User cannot be found!")
+	}
+
+	if (user.MoneyBalance - money) < 0 {
+		return nil, errors.New("User don't have enough money in account")
+	}
+
+	user.MoneyBalance = user.MoneyBalance - money
+
+	retValue := repo.db.Table("users").Save(&user)
+
+	return &user, retValue.Error
+}
+
+func (repo *DataService) Assesment(username string, grade uint) error {
+	var user model.User
+	result := repo.db.Table("users").Where("username = ?", username).First(&user)
+
+	if result.Error != nil {
+		return errors.New("User cannot be found!")
+	}
+
+	newGrade := user.Review*float32(user.ReviewCounter) + float32(grade)
+	user.ReviewCounter = user.ReviewCounter + 1
+	user.Review = newGrade / float32(user.ReviewCounter)
+
+	retValue := repo.db.Table("users").Save(&user)
+
+	return retValue.Error
 }

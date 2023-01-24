@@ -24,26 +24,48 @@ func NewUsersHandler(ds *dataService.DataService) *UsersHandler {
 
 var jwtKey = []byte("DusanBogOtac")
 
-func (uh *UsersHandler) Authorize(w http.ResponseWriter, r *http.Request) {
+func (uh *UsersHandler) AuthorizeAdmin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	cookie := r.Header.Values("Authorization")
 	tokenString := strings.Split(cookie[0], " ")[1]
 
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
-		})
+		return jwtKey, nil
+	})
 
 	if err != nil || !token.Valid {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	// claims, _ := token.Claims.(jwt.MapClaims)
+	claims, _ := token.Claims.(jwt.MapClaims)
 
-	// if claims["role"] != model.Admin {
-	// 	w.WriteHeader(http.StatusUnauthorized)
-	// }
+	if claims["role"] != model.Admin {
+		w.WriteHeader(http.StatusUnauthorized)
+	}
+}
+
+func (uh *UsersHandler) AuthorizeUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	cookie := r.Header.Values("Authorization")
+	tokenString := strings.Split(cookie[0], " ")[1]
+
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+
+	if err != nil || !token.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	claims, _ := token.Claims.(jwt.MapClaims)
+
+	if claims["role"] != model.Standard {
+		w.WriteHeader(http.StatusUnauthorized)
+	}
 }
 
 func (uh *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +88,7 @@ func (uh *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
 	id, saveErr := uh.ds.Save(user)
 
 	w.Header().Set("Content-Type", "application/json")
-	if saveErr != nil{
+	if saveErr != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(saveErr.Error())
 	} else {
@@ -87,8 +109,8 @@ func (uh *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err.Error())
 		return
 	}
-	
-	token := jwt.New(jwt.SigningMethodHS256)	
+
+	token := jwt.New(jwt.SigningMethodHS256)
 	claims := make(jwt.MapClaims)
 	claims["id"] = user.ID
 	claims["email"] = user.EmailAddress
@@ -101,7 +123,6 @@ func (uh *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(tokenString)
 }
 
-
 func (rh *UsersHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	allUsers := rh.ds.FindAllUsers()
@@ -109,7 +130,6 @@ func (rh *UsersHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(allUsers)
 }
-
 
 func (uh *UsersHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var newUser model.UpdateUserDto
@@ -134,15 +154,71 @@ func (uh *UsersHandler) FindUserById(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())
-	} else{
+	} else {
 		user, err := uh.ds.FindById(uint64(id))
-		
+
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(err.Error())
 			return
 		}
 		//poslati dto ne citavog usera
+		json.NewEncoder(w).Encode(user)
+	}
+}
+
+func (uh *UsersHandler) CreateRepairman(w http.ResponseWriter, r *http.Request) {
+	var newUser model.CreateRepairmanDto
+	json.NewDecoder(r.Body).Decode(&newUser)
+
+	err := uh.ds.CreateRepairman(&newUser)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+	} else {
+		json.NewEncoder(w).Encode(newUser)
+	}
+}
+
+func (rh *UsersHandler) GetAllRepairman(w http.ResponseWriter, r *http.Request) {
+
+	allUsers := rh.ds.FindAllRepairman()
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(allUsers)
+}
+
+func (uh *UsersHandler) BanUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	idStr := params["id"]
+	id, _ := strconv.ParseUint(idStr, 10, 64)
+
+	user, err := uh.ds.BanUser(id)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+	} else {
+		json.NewEncoder(w).Encode(user)
+	}
+}
+
+func (uh *UsersHandler) PaymentOnAccount(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	idStr := params["id"]
+	moneyStr := params["id"]
+	id, _ := strconv.ParseUint(idStr, 10, 64)
+	money, _ := strconv.ParseUint(moneyStr, 10, 64)
+	user, err := uh.ds.Payment(id, money)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+	} else {
 		json.NewEncoder(w).Encode(user)
 	}
 }
