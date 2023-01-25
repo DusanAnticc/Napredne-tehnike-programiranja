@@ -209,10 +209,44 @@ func (uh *UsersHandler) BanUser(w http.ResponseWriter, r *http.Request) {
 func (uh *UsersHandler) PaymentOnAccount(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	idStr := params["id"]
-	moneyStr := params["id"]
+	moneyStr := params["money"]
 	id, _ := strconv.ParseUint(idStr, 10, 64)
 	money, _ := strconv.ParseUint(moneyStr, 10, 64)
 	user, err := uh.ds.Payment(id, money)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+	} else {
+		json.NewEncoder(w).Encode(user)
+	}
+}
+
+func (uh *UsersHandler) PayBill(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	idStr := params["id"]
+	moneyStr := params["money"]
+	id, _ := strconv.ParseUint(idStr, 10, 64)
+	money, _ := strconv.ParseUint(moneyStr, 10, 64)
+	user, err := uh.ds.Payment(id, money)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+	} else {
+		json.NewEncoder(w).Encode(user)
+	}
+}
+
+func (uh *UsersHandler) Assessment(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	usernameStr := params["username"]
+	gradeStr := params["grade"]
+
+	grade, _ := strconv.ParseUint(gradeStr, 10, 64)
+	user, err := uh.ds.Assessment(usernameStr, grade)
 
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {

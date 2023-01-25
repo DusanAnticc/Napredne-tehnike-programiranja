@@ -28,17 +28,29 @@ func (repo *DataService) CreateAppointment(app *model.Appointment) error {
 	return retValue.Error
 }
 
-func (repo *DataService) AcceptAppointment(id uint64) error {
+func (repo *DataService) AcceptAppointment(id uint64, username string) (*model.Appointment, error) {
 	var app model.Appointment
-	result := repo.db.Table("users").Where("id = ?", id).First(&app)
+	result := repo.db.Table("appointments").Where("id = ?", id).First(&app)
 
 	if result.Error != nil {
-		return errors.New("User cannot be found!")
+		return nil, errors.New("User cannot be found!")
+	}
+
+	if app.Repairman != username {
+		return nil, errors.New("Not your appointment")
 	}
 
 	app.Accepted = true
 
-	retValue := repo.db.Table("users").Save(&app)
+	retValue := repo.db.Table("appointments").Save(&app)
 
-	return retValue.Error
+	return &app, retValue.Error
+}
+
+func (repo *DataService) FindAllAppointments(username string) []model.Appointment {
+	var allAppointments []model.Appointment
+
+	repo.db.Table("apointments").Where("(deleted_at IS NULL) AND (repairman = ?)", username).Find(&allAppointments)
+
+	return allAppointments
 }

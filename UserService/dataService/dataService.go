@@ -187,12 +187,12 @@ func (repo *DataService) PayBill(id, money uint64) (*model.User, error) {
 	return &user, retValue.Error
 }
 
-func (repo *DataService) Assesment(username string, grade uint) error {
+func (repo *DataService) Assessment(username string, grade uint64) (*model.User, error) {
 	var user model.User
 	result := repo.db.Table("users").Where("username = ?", username).First(&user)
 
 	if result.Error != nil {
-		return errors.New("User cannot be found!")
+		return nil, errors.New("User cannot be found!")
 	}
 
 	newGrade := user.Review*float32(user.ReviewCounter) + float32(grade)
@@ -201,5 +201,5 @@ func (repo *DataService) Assesment(username string, grade uint) error {
 
 	retValue := repo.db.Table("users").Save(&user)
 
-	return retValue.Error
+	return &user, retValue.Error
 }

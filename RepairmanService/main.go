@@ -10,6 +10,6 @@ import (
 func main() {
 	db := config.InitDatabase()
 	dataservice := dataService.NewDataService(db)
-	handler := adapter.NewUsersHandler(dataservice)
+	handler := adapter.NewRepairmanHandler(dataservice)
 	router.HandleRequests(handler)
 }

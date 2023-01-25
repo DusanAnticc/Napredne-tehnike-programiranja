@@ -10,6 +10,8 @@ import (
 )
 
 var BaseUserService, _ = roundrobin.New(&url.URL{Host: "http://localhost:8081"})
+var BaseRepairmanService, _ = roundrobin.New(&url.URL{Host: "http://localhost:8082"})
+var BaseAdminService, _ = roundrobin.New(&url.URL{Host: "http://localhost:8083"})
 
 func DelegateResponse(response *http.Response, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", response.Header.Get("Content-Type"))
