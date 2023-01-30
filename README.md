@@ -44,5 +44,5 @@ GO
 Pharo
 - Mikroservis za email (slanje potvrde o rezervacijama)
 
-React
+Angular
 - Klijentska veb aplikacija
