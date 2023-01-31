@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { UserRoutes } from './user.routes';
 import { UserPageComponent } from './pages/user-page/user-page.component';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { HireRepairmanComponent } from './components/hire-repairman/hire-repairman.component';
 import { CreateAppointmentComponent } from '../repairman/components/create-appointment/create-appointment.component';
@@ -29,7 +28,6 @@ import { HireRepairmanPageComponent } from './pages/hire-repairman-page/hire-rep
   imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
     Ng2SearchPipeModule,
     RouterModule.forChild(UserRoutes),
     ToastrModule,

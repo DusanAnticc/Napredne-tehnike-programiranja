@@ -14,13 +14,14 @@ export class AdminService {
   constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   createRepairman(user: Repairman): void {
-    this.http.post<Repairman>(
-      'http://localhost:8080/api/users/createRepairman',
-      {
+    from(
+      fetch('http://localhost:8080/api/users/createRepairman', {
         method: 'POST',
         body: JSON.stringify(user),
-      }
-    );
+      }).then((response) => response.json())
+    ).subscribe((response) => {
+      this.toastr.success('User created successfull!');
+    });
   }
 
   getAllReviews(): Observable<Review[]> {
