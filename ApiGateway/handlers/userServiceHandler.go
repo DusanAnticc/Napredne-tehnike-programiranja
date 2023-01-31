@@ -2,7 +2,6 @@ package handlers
 
 import (
 	utils "ApiGateway/utils"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -87,12 +86,10 @@ func CreateRepairman(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//fmt.Println("1")
 	//if !utils.AuthorizeAdmin(r) {
 	//	w.WriteHeader(http.StatusUnauthorized)
 	//	return
 	//}
-	fmt.Println("dosao")
 
 	response, err := http.Post(utils.BaseUserService.Next().Host+"/api/users/createRepairman", "application/json", r.Body)
 

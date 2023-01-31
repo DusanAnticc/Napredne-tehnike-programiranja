@@ -27,20 +27,24 @@ func (uh *UsersHandler) AuthorizeAdmin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	cookie := r.Header.Values("Authorization")
+
 	tokenString := strings.Split(cookie[0], " ")[1]
 
-	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+	claims := make(jwt.MapClaims)
+	claims["id"] = ""
+	claims["email"] = ""
+	claims["role"] = ""
+	claims["expirationTime"] = ""
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
-	fmt.Println(3)
+
 	if err != nil || !token.Valid {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	claims, _ := token.Claims.(jwt.MapClaims)
-
-	fmt.Println(4)
+	claims, _ = token.Claims.(jwt.MapClaims)
 
 	if claims["role"] != model.Admin {
 		w.WriteHeader(http.StatusUnauthorized)
