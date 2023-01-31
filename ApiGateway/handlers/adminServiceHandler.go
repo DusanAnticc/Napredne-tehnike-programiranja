@@ -83,3 +83,39 @@ func DeleteReview(w http.ResponseWriter, r *http.Request) {
 
 	utils.DelegateResponse(response, w)
 }
+
+func GetAllReviews(w http.ResponseWriter, r *http.Request) {
+	utils.SetupResponse(&w, r)
+	params := mux.Vars(r)
+	usernameStr := params["username"]
+
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	response, err := http.Get(utils.BaseAdminService.Next().Host + "/api/admin/get-all-reviews/" + usernameStr)
+
+	if err != nil {
+		w.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, w)
+}
+
+func FindAllReviews(w http.ResponseWriter, r *http.Request) {
+	utils.SetupResponse(&w, r)
+
+	if r.Method == "OPTIONS" {
+		return
+	}
+
+	response, err := http.Get(utils.BaseAdminService.Next().Host + "/api/admin/get-all-reviews")
+
+	if err != nil {
+		w.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, w)
+}

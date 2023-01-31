@@ -50,11 +50,56 @@ func (uh *RepairmanHandler) AcceptAppointment(w http.ResponseWriter, r *http.Req
 	}
 }
 
+func (uh *RepairmanHandler) DeclineAppointment(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	idStr := params["id"]
+	username := params["username"]
+	id, _ := strconv.ParseUint(idStr, 10, 64)
+
+	result, err := uh.ds.DeclineAppointment(id, username)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+	} else {
+		json.NewEncoder(w).Encode(result)
+	}
+}
+
+func (uh *RepairmanHandler) PayAppointment(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	idStr := params["id"]
+	id, _ := strconv.ParseUint(idStr, 10, 64)
+
+	result, err := uh.ds.PayAppointment(id)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+	} else {
+		json.NewEncoder(w).Encode(result)
+	}
+}
+
 func (rh *RepairmanHandler) FindAllAppointments(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	username := params["username"]
 	allUsers := rh.ds.FindAllAppointments(username)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(allUsers)
+}
+
+func (rh *RepairmanHandler) FindAllAppointmentsUser(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	username := params["username"]
+	allUsers := rh.ds.FindAllAppointmentsUser(username)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(allUsers)

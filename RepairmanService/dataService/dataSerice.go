@@ -33,7 +33,7 @@ func (repo *DataService) AcceptAppointment(id uint64, username string) (*model.A
 	result := repo.db.Table("appointments").Where("id = ?", id).First(&app)
 
 	if result.Error != nil {
-		return nil, errors.New("User cannot be found!")
+		return nil, errors.New("Appointment cannot be found!")
 	}
 
 	if app.Repairman != username {
@@ -47,10 +47,52 @@ func (repo *DataService) AcceptAppointment(id uint64, username string) (*model.A
 	return &app, retValue.Error
 }
 
+func (repo *DataService) DeclineAppointment(id uint64, username string) (*model.Appointment, error) {
+	var app model.Appointment
+	result := repo.db.Table("appointments").Where("id = ?", id).First(&app)
+
+	if result.Error != nil {
+		return nil, errors.New("Appointment cannot be found!")
+	}
+
+	if app.Repairman != username {
+		return nil, errors.New("Not your appointment")
+	}
+
+	app.Accepted = false
+
+	retValue := repo.db.Table("appointments").Save(&app)
+
+	return &app, retValue.Error
+}
+
+func (repo *DataService) PayAppointment(id uint64) (*model.Appointment, error) {
+	var app model.Appointment
+	result := repo.db.Table("appointments").Where("id = ?", id).First(&app)
+
+	if result.Error != nil {
+		return nil, errors.New("Appointment cannot be found!")
+	}
+
+	app.Paid = true
+
+	retValue := repo.db.Table("appointments").Save(&app)
+
+	return &app, retValue.Error
+}
+
 func (repo *DataService) FindAllAppointments(username string) []model.Appointment {
 	var allAppointments []model.Appointment
 
-	repo.db.Table("apointments").Where("(deleted_at IS NULL) AND (repairman = ?)", username).Find(&allAppointments)
+	repo.db.Table("appointments").Where("(deleted_at IS NULL) AND (repairman = ?)", username).Find(&allAppointments)
+
+	return allAppointments
+}
+
+func (repo *DataService) FindAllAppointmentsUser(username string) []model.Appointment {
+	var allAppointments []model.Appointment
+
+	repo.db.Table("appointments").Where("(accepted = true) AND (paid = false) AND (username = ?)", username).Find(&allAppointments)
 
 	return allAppointments
 }

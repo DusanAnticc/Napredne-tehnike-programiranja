@@ -5,13 +5,12 @@ import (
 	"UserService/model"
 	"encoding/json"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gorilla/mux"
 )
 
 type UsersHandler struct {
@@ -22,7 +21,7 @@ func NewUsersHandler(ds *dataService.DataService) *UsersHandler {
 	return &UsersHandler{ds}
 }
 
-var jwtKey = []byte("DusanBogOtac")
+var jwtKey = []byte("your-256-bit-secret")
 
 func (uh *UsersHandler) AuthorizeAdmin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -33,13 +32,15 @@ func (uh *UsersHandler) AuthorizeAdmin(w http.ResponseWriter, r *http.Request) {
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
-
+	fmt.Println(3)
 	if err != nil || !token.Valid {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
 	claims, _ := token.Claims.(jwt.MapClaims)
+
+	fmt.Println(4)
 
 	if claims["role"] != model.Admin {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -73,11 +74,7 @@ func (uh *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	json.NewDecoder(r.Body).Decode(&user)
 
-	userCheck, err := uh.ds.FindByEmail(user.EmailAddress)
-
-	if err != nil {
-		fmt.Println(err)
-	}
+	userCheck, _ := uh.ds.FindByEmail(user.EmailAddress)
 
 	if userCheck.ID != 0 {
 		w.WriteHeader(http.StatusBadRequest)
@@ -97,30 +94,35 @@ func (uh *UsersHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type LoginResponse struct {
+	Token string `json:"Token"`
+}
+
 func (uh *UsersHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var loginInfo model.Login
+	w.Header().Set("Content-Type", "application/json")
 
 	json.NewDecoder(r.Body).Decode(&loginInfo)
 
-	user, err := uh.ds.FindByEmail(loginInfo.EmailAddress)
+	user, err := uh.ds.FindByUsername(loginInfo.Username)
 
-	if err != nil {
+	if err == nil {
+
+		claims := make(jwt.MapClaims)
+		claims["id"] = user.ID
+		claims["email"] = user.EmailAddress
+		claims["role"] = user.Role
+		claims["expirationTime"] = time.Now().Add(time.Hour * 24).Unix()
+		token := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
+		tokenString, _ := token.SignedString(jwtKey)
+
+		fmt.Println(tokenString)
+
+		json.NewEncoder(w).Encode(LoginResponse{Token: tokenString})
+	} else {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(err.Error())
-		return
 	}
-
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := make(jwt.MapClaims)
-	claims["id"] = user.ID
-	claims["email"] = user.EmailAddress
-	claims["role"] = user.Role
-	claims["expirationTime"] = time.Now().Add(time.Hour * 24).Unix()
-
-	token.Claims = claims
-	tokenString, _ := token.SignedString([]byte(jwtKey))
-
-	json.NewEncoder(w).Encode(tokenString)
 }
 
 func (rh *UsersHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
@@ -162,8 +164,11 @@ func (uh *UsersHandler) FindUserById(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(err.Error())
 			return
 		}
+
+		userDto := user.ToUserDTO()
+
 		//poslati dto ne citavog usera
-		json.NewEncoder(w).Encode(user)
+		json.NewEncoder(w).Encode(userDto)
 	}
 }
 
@@ -192,10 +197,9 @@ func (rh *UsersHandler) GetAllRepairman(w http.ResponseWriter, r *http.Request) 
 
 func (uh *UsersHandler) BanUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idStr := params["id"]
-	id, _ := strconv.ParseUint(idStr, 10, 64)
+	username := params["username"]
 
-	user, err := uh.ds.BanUser(id)
+	user, err := uh.ds.BanUser(username)
 
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
@@ -208,11 +212,10 @@ func (uh *UsersHandler) BanUser(w http.ResponseWriter, r *http.Request) {
 
 func (uh *UsersHandler) PaymentOnAccount(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idStr := params["id"]
+	username := params["username"]
 	moneyStr := params["money"]
-	id, _ := strconv.ParseUint(idStr, 10, 64)
 	money, _ := strconv.ParseUint(moneyStr, 10, 64)
-	user, err := uh.ds.Payment(id, money)
+	user, err := uh.ds.Payment(username, money)
 
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
@@ -225,11 +228,11 @@ func (uh *UsersHandler) PaymentOnAccount(w http.ResponseWriter, r *http.Request)
 
 func (uh *UsersHandler) PayBill(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	idStr := params["id"]
+	username := params["username"]
 	moneyStr := params["money"]
-	id, _ := strconv.ParseUint(idStr, 10, 64)
+
 	money, _ := strconv.ParseUint(moneyStr, 10, 64)
-	user, err := uh.ds.Payment(id, money)
+	user, err := uh.ds.PayBill(username, money)
 
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {

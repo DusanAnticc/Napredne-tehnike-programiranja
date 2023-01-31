@@ -87,3 +87,20 @@ func (uh *AdminHandler) DeleteReview(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(newReview)
 	}
 }
+
+func (uh *AdminHandler) GetAllReviews(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
+	allUsers := uh.ds.FindAllReviews(username)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(allUsers)
+}
+
+func (uh *AdminHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+
+	allUsers := uh.ds.GetAllReviews()
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(allUsers)
+}

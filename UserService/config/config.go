@@ -62,6 +62,16 @@ var users = []model.User{
 		LastName:     "Nikolic",
 		Role:         model.Standard,
 	},
+
+	{
+		Model:        gorm.Model{},
+		Username:     "goran",
+		Password:     "$2a$10$yu08QPMBib4Jd8i6pUVeeuH.OE22cQWvpGGI5Oqc4DQdRvQL.9Rsm",
+		EmailAddress: "goran@gmail.com",
+		FirstName:    "Goran",
+		LastName:     "Markovic",
+		Role:         model.Employee,
+	},
 }
 
 func InitDatabase() *gorm.DB {

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"net/http"
@@ -29,26 +30,30 @@ func SetupResponse(w *http.ResponseWriter, r *http.Request) {
 }
 
 func AuthorizeAdmin(r *http.Request) bool {
-
-	request, err := http.NewRequest(http.MethodGet, BaseUserService.Next().Host+"/api/users/authA", nil)
-
-	request.Header.Values("Authorization")
-	request.Header.Set("Authorization", request.Header.Values("Authorization")[0])
-
+	fmt.Println("2")
+	request, _ := http.NewRequest(http.MethodGet, BaseUserService.Next().Host+"/api/users/authA", nil)
+	bytes.NewBufferString("")
+	request.Header.Set("Accept", "application/json")
+	values := r.Header.Values("Authorization")
+	fmt.Println("5")
+	fmt.Println(values)
+	if len(values) == 0 {
+		return false
+	}
+	fmt.Println("6")
+	request.Header.Set("Authorization", values[0])
+	authClient := &http.Client{}
+	authResponse, err := authClient.Do(request)
+	fmt.Println("7")
 	if err != nil {
-		fmt.Println(err.Error())
 		return false
 	}
-
-	client := &http.Client{}
-	response, err := client.Do(request)
-
-	if response.StatusCode != 200 {
-		fmt.Println("Unauthorized")
+	fmt.Println("8")
+	if authResponse.StatusCode != 200 {
 		return false
 	}
-
-	return false
+	fmt.Println("9")
+	return true
 }
 
 func AuthorizeUser(r *http.Request) bool {

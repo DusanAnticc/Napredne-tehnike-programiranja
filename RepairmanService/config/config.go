@@ -19,7 +19,7 @@ var appointments = []model.Appointment{
 	{
 		Model:             gorm.Model{},
 		Username:          "dusan",
-		Repairman:         "nikola",
+		Repairman:         "mirko",
 		DateOfAppointment: "2023-01-01",
 		TimeOfAppointment: "12:00",
 		Accepted:          false,

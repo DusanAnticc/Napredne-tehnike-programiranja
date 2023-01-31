@@ -1,0 +1,41 @@
+<body class="align">
+  <div class="grid align__item">
+    <form class="form">
+      <div class="input">
+        <input type="text" class="input-field" id="username" required />
+        <label class="input-label">Username</label>
+      </div>
+      <div class="input">
+        <input type="text" class="input-field" id="repairman" required />
+        <label class="input-label">Repairman</label>
+      </div>
+      <div class="input">
+        <input
+          type="date"
+          class="input-field"
+          id="dateOfAppointment"
+          required
+        />
+        <label class="input-label"></label>
+      </div>
+      <div class="input">
+        <input
+          type="time"
+          class="input-field"
+          runat="server"
+          id="timeOfAppointment"
+          required
+        />
+        <label class="input-label"></label>
+      </div>
+      <div class="input">
+        <input type="text" class="input-field" id="price" required />
+        <label class="input-label">Price</label>
+      </div>
+    </form>
+    <br />
+    <div class="form__field">
+      <button class="submit" (click)="saveChanges()">Create</button>
+    </div>
+  </div>
+</body>

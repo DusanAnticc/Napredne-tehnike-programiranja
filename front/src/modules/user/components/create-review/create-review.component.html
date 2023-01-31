@@ -1,0 +1,27 @@
+<body class="align">
+  <div class="grid align__item">
+    <form class="form">
+      <div class="input">
+        <input type="text" class="input-field" id="ClientUsername" required />
+        <label class="input-label">Client Username</label>
+      </div>
+      <div class="input">
+        <input
+          type="text"
+          class="input-field"
+          id="RepairmanUsername"
+          required
+        />
+        <label class="input-label">Repairman Username</label>
+      </div>
+      <div class="input">
+        <input type="text" class="input-field" id="Text" required />
+        <label class="input-label">Text</label>
+      </div>
+    </form>
+    <br />
+    <div class="form__field">
+      <button class="submit" (click)="saveChanges()">Create</button>
+    </div>
+  </div>
+</body>

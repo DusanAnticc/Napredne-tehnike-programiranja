@@ -10,6 +10,7 @@ const (
 	Admin     = "Admin"
 	Standard  = "Standard"
 	Repairman = "Repairman"
+	Employee  = "Employee"
 )
 
 type User struct {
@@ -30,6 +31,6 @@ type User struct {
 }
 
 type Login struct {
-	EmailAddress string
-	Password     string
+	Username string
+	Password string
 }

@@ -1,0 +1,57 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+  <div class="container">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarToggler"
+      aria-controls="navbarToggler"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarToggler">
+      <a class="navbar-brand" href="#"> </a>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- <li class="nav-item">
+              <a class="nav-link" href="manager/employees">Employees</a>
+            </li> -->
+
+        <li class="nav-item">
+          <a class="nav-link" href="user/hire">Hire Repairman</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" href="user/createAppointment"
+            >Create Appointment</a
+          >
+        </li> -->
+        <li class="nav-item">
+          <a class="nav-link" href="user/createReview">Create Review</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="user/assessment">Create Assessment</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="user/inspectReview">Inspect Reviews</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="user/payBill">Pay Bill</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="user/profile">My profile</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <button
+          class="btn btn-outline-light"
+          id="logOut"
+          style="font-family: 'Bebas Neue'; font-size: 20px"
+          (click)="logout()"
+        >
+          Log out
+        </button>
+      </form>
+    </div>
+  </div>
+</nav>

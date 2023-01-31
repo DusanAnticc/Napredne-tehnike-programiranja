@@ -3,6 +3,8 @@ package dataService
 import (
 	"UserService/model"
 	"errors"
+	"fmt"
+	"strconv"
 	"unicode"
 
 	"golang.org/x/crypto/bcrypt"
@@ -38,7 +40,8 @@ func (repo *DataService) Save(user model.User) (uint, error) {
 
 func (repo *DataService) Update(userDto *model.UpdateUserDto) error {
 	var user model.User
-	result := repo.db.Table("users").Where("id = ?", userDto.Id).First(&user)
+	id, _ := strconv.ParseUint(userDto.Id, 10, 64)
+	result := repo.db.Table("users").Where("id = ?", id).First(&user)
 
 	if result.Error != nil {
 		return errors.New("User cannot be found!")
@@ -53,18 +56,31 @@ func (repo *DataService) Update(userDto *model.UpdateUserDto) error {
 	return retValue.Error
 }
 
-func (repo *DataService) FindAllUsers() []model.User {
+func (repo *DataService) FindAllUsers() []model.UserDto {
 	var allUsers []model.User
+	var allUsersDto []model.UserDto
 
-	repo.db.Table("users").Where("(deleted_at IS NULL)").Find(&allUsers)
+	repo.db.Table("users").Where("(deleted_at IS NULL AND banned = false)").Find(&allUsers)
 
-	return allUsers
+	for _, user := range allUsers {
+		allUsersDto = append(allUsersDto, user.ToUserDTO())
+	}
+
+	return allUsersDto
 }
 
 func (repo *DataService) FindByEmail(email string) (model.User, error) {
 	var user model.User
 
 	result := repo.db.Table("users").Where("email_address = ? AND deleted_at IS NULL", email).First(&user)
+
+	return user, result.Error
+}
+
+func (repo *DataService) FindByUsername(username string) (model.User, error) {
+	var user model.User
+
+	result := repo.db.Table("users").Where("username = ? AND deleted_at IS NULL", username).First(&user)
 
 	return user, result.Error
 }
@@ -130,17 +146,21 @@ func (repo *DataService) CreateRepairman(userDto *model.CreateRepairmanDto) erro
 	return retValue.Error
 }
 
-func (repo *DataService) FindAllRepairman() []model.User {
+func (repo *DataService) FindAllRepairman() []model.RepairmanDto {
 	var allUsers []model.User
+	var allRepairmans []model.RepairmanDto
 
 	repo.db.Table("users").Where("(deleted_at IS NULL) AND (role = ?)", model.Role("Repairman")).Find(&allUsers)
 
-	return allUsers
+	for _, user := range allUsers {
+		allRepairmans = append(allRepairmans, user.ToRepairmanDto())
+	}
+	return allRepairmans
 }
 
-func (repo *DataService) BanUser(id uint64) (*model.User, error) {
+func (repo *DataService) BanUser(username string) (*model.User, error) {
 	var user model.User
-	result := repo.db.Table("users").Where("id = ?", id).First(&user)
+	result := repo.db.Table("users").Where("username = ?", username).First(&user)
 
 	if result.Error != nil {
 		return nil, errors.New("User cannot be found!")
@@ -153,9 +173,9 @@ func (repo *DataService) BanUser(id uint64) (*model.User, error) {
 	return &user, retValue.Error
 }
 
-func (repo *DataService) Payment(id, money uint64) (*model.User, error) {
+func (repo *DataService) Payment(username string, money uint64) (*model.User, error) {
 	var user model.User
-	result := repo.db.Table("users").Where("id = ?", id).First(&user)
+	result := repo.db.Table("users").Where("username = ?", username).First(&user)
 
 	if result.Error != nil {
 		return nil, errors.New("User cannot be found!")
@@ -168,14 +188,15 @@ func (repo *DataService) Payment(id, money uint64) (*model.User, error) {
 	return &user, retValue.Error
 }
 
-func (repo *DataService) PayBill(id, money uint64) (*model.User, error) {
+func (repo *DataService) PayBill(username string, money uint64) (*model.User, error) {
 	var user model.User
-	result := repo.db.Table("users").Where("id = ?", id).First(&user)
+	result := repo.db.Table("users").Where("username = ?", username).First(&user)
 
 	if result.Error != nil {
 		return nil, errors.New("User cannot be found!")
 	}
 
+	fmt.Println(user.MoneyBalance - money)
 	if (user.MoneyBalance - money) < 0 {
 		return nil, errors.New("User don't have enough money in account")
 	}

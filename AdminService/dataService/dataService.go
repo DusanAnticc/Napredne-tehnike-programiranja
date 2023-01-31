@@ -70,3 +70,17 @@ func (repo *DataService) DeleteReview(id uint64) error {
 
 	return retValue.Error
 }
+
+func (repo *DataService) FindAllReviews(username string) []model.Review {
+	var allReviews []model.Review
+	repo.db.Table("reviews").Where("deleted = false AND client_username = ? ", username).Find(&allReviews)
+
+	return allReviews
+}
+
+func (repo *DataService) GetAllReviews() []model.Review {
+	var allReviews []model.Review
+	repo.db.Table("reviews").Where("deleted = false").Find(&allReviews)
+
+	return allReviews
+}

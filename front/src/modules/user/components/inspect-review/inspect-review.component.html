@@ -1,0 +1,90 @@
+<div class="container rounded bg-white">
+  <div class="row">
+    <div class="col-md-5 border-right">
+      <div class="p-3 py-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right"></h4>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6">
+            <label class="labels">Username</label
+            ><input
+              type="text"
+              class="form-control"
+              id="username"
+              value="{{ currentRepairmanUsername }}"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="labels">Response</label
+            ><input
+              type="text"
+              class="form-control"
+              id="response"
+              value="{{ val }}"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="mt-5 text-center">
+          <button class="btn btn-primary" type="button" (click)="response()">
+            Response
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+
+<div class="search-container">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    fill="currentColor"
+    class="bi bi-search"
+    viewBox="0 0 16 16"
+  >
+    <path
+      d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+    />
+  </svg>
+  <input
+    type="text"
+    name="search"
+    [(ngModel)]="term"
+    class="search-input"
+    placeholder="Search User..."
+  />
+</div>
+<div class="row card-group">
+  <div class="col-3" *ngFor="let review of reviews | filter : term">
+    <div id="container">
+      <div>
+        <h1>from: {{ review.RepairmanUsername }}</h1>
+        <p class="information">{{ review.Text }}</p>
+
+        <button
+          class="btn btn"
+          id="responseBtn"
+          style="font-family: 'Bebas Neue'; font-size: 25px"
+          (click)="response1(review.ID, review.RepairmanUsername)"
+        >
+          Response
+        </button>
+        <button
+          class="btn btn"
+          id="reportBtn"
+          style="font-family: 'Bebas Neue'; font-size: 25px"
+          (click)="report(review.ID)"
+        >
+          {{ review.Report === false ? "Report" : "Reported  " }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
