@@ -1,0 +1,41 @@
+<div class="container rounded bg-white">
+  <div class="row">
+    <div class="col-md-5 border-right">
+      <div class="p-3 py-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right"></h4>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6">
+            <label class="labels">Username</label
+            ><input
+              type="text"
+              class="form-control"
+              id="username"
+              value="{{ user.Username }}"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="labels">Grade</label
+            ><input
+              type="number"
+              class="form-control"
+              id="grade"
+              [min]="0"
+              [max]="5"
+              value="{{ user.Grade }}"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="mt-5 text-center">
+          <button class="btn btn-primary" type="button" (click)="saveChanges()">
+            Grade
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

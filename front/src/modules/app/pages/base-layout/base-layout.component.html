@@ -1,0 +1,9 @@
+<app-navbar-admin *ngIf="currentRole === 'Admin'"> </app-navbar-admin>
+<app-navbar-user *ngIf="currentRole === 'Standard'"> </app-navbar-user>
+<app-navbar-repairman *ngIf="currentRole === 'Repairman'">
+</app-navbar-repairman>
+<app-navbar-employee *ngIf="currentRole === 'Employee'"> </app-navbar-employee>
+<div class="container">
+  <br />
+  <router-outlet></router-outlet>
+</div>

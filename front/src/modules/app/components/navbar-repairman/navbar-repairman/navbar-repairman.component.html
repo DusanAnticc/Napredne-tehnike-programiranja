@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+  <div class="container">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarToggler"
+      aria-controls="navbarToggler"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarToggler">
+      <a class="navbar-brand" href="#"> </a>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- <li class="nav-item">
+              <a class="nav-link" href="manager/employees">Employees</a>
+            </li> -->
+        <li class="nav-item">
+          <a class="nav-link" href="repairman/acceptAppointment"
+            >Accept Appointment</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="repairman/assessment">Assessment</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="repairman/profile">My profile</a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <button
+          class="btn btn-outline-light"
+          id="logOut"
+          style="font-family: 'Bebas Neue'; font-size: 20px"
+          (click)="logout()"
+        >
+          Log out
+        </button>
+      </form>
+    </div>
+  </div>
+</nav>

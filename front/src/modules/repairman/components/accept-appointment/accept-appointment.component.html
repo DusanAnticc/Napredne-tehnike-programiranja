@@ -1,0 +1,46 @@
+<div class="search-container">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    fill="currentColor"
+    class="bi bi-search"
+    viewBox="0 0 16 16"
+  >
+    <path
+      d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+    />
+  </svg>
+  <input
+    type="text"
+    name="search"
+    [(ngModel)]="term"
+    class="search-input"
+    placeholder="Search User..."
+  />
+</div>
+<div class="row card-group">
+  <div class="col-3" *ngFor="let app of appointments | filter : term">
+    <div id="container">
+      <div>
+        <h1>{{ app.Username }}</h1>
+        <p class="information">{{ app.DateOfAppointment }}</p>
+        <p class="information">{{ app.TimeOfAppointment }}</p>
+        <p class="information">({{ app.Price }}$)</p>
+        <button
+          class="btn btn"
+          style="font-family: 'Bebas Neue'; font-size: 25px"
+          (click)="appointmentBtn(app, app.ID)"
+        >
+          {{
+            app.Paid === true
+              ? "Paid"
+              : app.Accepted === false
+              ? "Accept"
+              : "Decline"
+          }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
