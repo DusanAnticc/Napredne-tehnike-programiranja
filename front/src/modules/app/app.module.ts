@@ -18,6 +18,7 @@ import { NavbarRepairmanComponent } from './components/navbar-repairman/navbar-r
 import { EmployeeModule } from '../employee/employee.module';
 import { NavbarEmployeeComponent } from './components/navbar-employee/navbar-employee/navbar-employee.component';
 import { RegisterComponent } from './components/register/register.component';
+import { Interceptor } from './interceptor/interceptor.interceptor';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,14 @@ import { RegisterComponent } from './components/register/register.component';
       positionClass: 'toast-top-right',
     }),
   ],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: Interceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

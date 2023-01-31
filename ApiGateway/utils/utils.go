@@ -13,6 +13,7 @@ import (
 var BaseUserService, _ = roundrobin.New(&url.URL{Host: "http://localhost:8081"})
 var BaseRepairmanService, _ = roundrobin.New(&url.URL{Host: "http://localhost:8082"})
 var BaseAdminService, _ = roundrobin.New(&url.URL{Host: "http://localhost:8083"})
+var BaseEmailService, _ = roundrobin.New(&url.URL{Host: "http://localhost:8000"})
 
 func DelegateResponse(response *http.Response, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", response.Header.Get("Content-Type"))
@@ -30,29 +31,28 @@ func SetupResponse(w *http.ResponseWriter, r *http.Request) {
 }
 
 func AuthorizeAdmin(r *http.Request) bool {
-	fmt.Println("2")
+
 	request, _ := http.NewRequest(http.MethodGet, BaseUserService.Next().Host+"/api/users/authA", nil)
 	bytes.NewBufferString("")
 	request.Header.Set("Accept", "application/json")
 	values := r.Header.Values("Authorization")
-	fmt.Println("5")
-	fmt.Println(values)
+
 	if len(values) == 0 {
 		return false
 	}
-	fmt.Println("6")
+
 	request.Header.Set("Authorization", values[0])
 	authClient := &http.Client{}
 	authResponse, err := authClient.Do(request)
-	fmt.Println("7")
+
 	if err != nil {
 		return false
 	}
-	fmt.Println("8")
+
 	if authResponse.StatusCode != 200 {
 		return false
 	}
-	fmt.Println("9")
+
 	return true
 }
 

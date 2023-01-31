@@ -48,6 +48,8 @@ func HandleRequests() {
 	router.HandleFunc("/api/repairman/findAllAppointment/{username}", handlers.FindAllAppointment).Methods(http.MethodGet)
 	router.HandleFunc("/api/repairman/findAllAppointmentUser/{username}", handlers.FindAllAppointmentUser).Methods(http.MethodGet)
 
+	router.HandleFunc("/api/email/send", handlers.Email).Methods(http.MethodGet)
+
 	log.Fatal(http.ListenAndServe(":8080", corsHandler.Handler(router)))
 
 }
